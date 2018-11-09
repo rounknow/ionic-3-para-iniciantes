@@ -14,6 +14,10 @@ import { HttpModule } from "@angular/http";
 import { FeedPageModule } from "../pages/feed/feed.module";
 import { IntroPageModule } from "../pages/intro/intro.module";
 import { MoovieProvider } from '../providers/moovie/moovie';
+import { ConfiguracoesPageModule } from '../pages/configuracoes/configuracoes.module';
+import { SobrePageModule } from '../pages/sobre/sobre.module';
+import { PerfilPageModule } from '../pages/perfil/perfil.module';
+import { FilmeDetalhesPageModule } from '../pages/filme-detalhes/filme-detalhes.module';
 
 @NgModule({
   declarations: [
@@ -28,7 +32,11 @@ import { MoovieProvider } from '../providers/moovie/moovie';
     IonicModule.forRoot(MyApp),
 	  FeedPageModule,
     IntroPageModule,
-    HttpModule
+    HttpModule,
+    ConfiguracoesPageModule,
+    SobrePageModule,
+    PerfilPageModule,
+    FilmeDetalhesPageModule
   ],
   bootstrap: [IonicApp],
   entryComponents: [

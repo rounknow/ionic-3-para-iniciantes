@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
-import { IonicPage, NavController, NavParams } from 'ionic-angular';
+import { IonicPage, NavController, NavParams, LoadingController } from 'ionic-angular';
 import { MoovieProvider } from '../../providers/moovie/moovie';
+import { FilmeDetalhesPage } from '../filme-detalhes/filme-detalhes';
 
 /**
  * Generated class for the FeedPage page.
@@ -31,14 +32,29 @@ export class FeedPage
   }
 
   public listaFilmes = new Array<any>();
-
-
+  public page = 1;
   public nomeUsuario: string = "Charles Franca do Codigo";
+  public loader;
+  public refresher;
+  public isRefreshing: boolean = false;
+  public infiniteScroll;
 	
   
-  constructor(public navCtrl: NavController, public navParams: NavParams, private movieProvider: MoovieProvider) 
+  constructor(public navCtrl: NavController, public navParams: NavParams, private movieProvider: MoovieProvider, public loadingCtrl: LoadingController) 
   {
 	  
+  }
+
+  abreCarregando() {
+    this.loader = this.loadingCtrl.create({
+      content: "Carregando filmes..."
+    });
+    this.loader.present();
+  }
+
+  fechaCarregando()
+  {
+    this.loader.dismiss();
   }
 	
   public somaDoisNumeros(num1:number, num2:number): void
@@ -46,19 +62,61 @@ export class FeedPage
 	  alert(num1 + num2);	
   }
 
-  ionViewDidLoad() 
+  doRefresh(refresher) 
   {
-    this.movieProvider.getLatestMovies().subscribe(data=>
+    this.refresher = refresher;
+    this.isRefreshing = true;
+
+    this.carregarFilmes();
+  }
+
+  ionViewDidEnter() 
+  {
+    this.carregarFilmes();
+  }
+
+  carregarFilmes(newPage: boolean = false)
+  {
+    this.abreCarregando();
+    this.movieProvider.getLatestMovies(this.page).subscribe(data=>
     {
       const response = (data as any);
       const objetoRetorno = JSON.parse(response._body);
-      this.listaFilmes = objetoRetorno.results;
-      console.log(objetoRetorno);
+
+      if(newPage)
+      {
+        this.listaFilmes = this.listaFilmes.concat(objetoRetorno.results);
+        this.infiniteScroll.complete();
+      }
+      else
+      {
+        this.listaFilmes = objetoRetorno.results;
+      }
+      this.fechaCarregando();
+      if(this.isRefreshing)
+      {
+        this.refresher.complete();
+        this.isRefreshing = false;
+      }
     },
     error => 
     {
       console.log(error);
+      this.fechaCarregando();
     });
+  }
+
+  abrirDetalhes(filme)
+  {
+    console.log(filme);
+    this.navCtrl.push(FilmeDetalhesPage, { id: filme.id });
+  }
+
+  doInfinite(infiniteScroll) 
+  {
+    this.page++;
+    this.infiniteScroll = infiniteScroll;
+    this.carregarFilmes(true);
   }
 
 }

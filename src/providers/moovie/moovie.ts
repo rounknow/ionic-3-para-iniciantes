@@ -9,7 +9,8 @@ import { Observable } from 'rxjs/Observable';
   and Angular DI.
 */
 @Injectable()
-export class MoovieProvider {
+export class MoovieProvider 
+{
 
   public baseAPIPath = "https://api.themoviedb.org/3";
 
@@ -18,9 +19,14 @@ export class MoovieProvider {
     console.log('Hello MoovieProvider Provider');
   }
 
-  getLatestMovies()
+  getLatestMovies(page = 1)
   {
-    return this.http.get(this.baseAPIPath + "/movie/popular?api_key=" + this.getAPIKey());
+    return this.http.get(this.baseAPIPath + `/movie/popular?page=${page}&api_key=` + this.getAPIKey());
+  }
+
+  getMovieDetails(filmeId)
+  {
+     return this.http.get(this.baseAPIPath + `/movie/${filmeId}?api_key=` + this.getAPIKey());
   }
 
   getAPIKey() : string

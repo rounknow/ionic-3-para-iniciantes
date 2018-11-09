@@ -14,7 +14,9 @@
 
 
 <ion-content padding>
-	<h1>Nome do Usuario</h1>
+		<ion-refresher (ionRefresh)="doRefresh($event)">
+				<ion-refresher-content></ion-refresher-content>
+			</ion-refresher>
 <ion-card *ngFor="let filme of listaFilmes">
 
 	<ion-item>
@@ -50,6 +52,9 @@
 			</ion-note>
 		</ion-col>
 	</ion-row>
-
+	<button ion-button block (click)="abrirDetalhes(filme)">Detalhes</button>
 </ion-card>
+<ion-infinite-scroll (ionInfinite)="doInfinite($event)">
+		<ion-infinite-scroll-content></ion-infinite-scroll-content>
+	</ion-infinite-scroll>
 </ion-content>
